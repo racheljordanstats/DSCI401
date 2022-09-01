@@ -1,0 +1,20 @@
+---
+title: "cool"
+author: "Rachel Jordan"
+date: "2022-09-01"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##This is a header
+
+this is awesome
+
+```{r}
+x <- rnorm(10)
+hist(x)
+```
+
