@@ -1,0 +1,78 @@
+---
+title: "DSCI 401 HW 1"
+author: "Rachel Jordan"
+date: "2022-09-02"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## **Question 1**
+
+### Set up a github account and create a repository called DSCI401. Clone this repo into RStudio: <https://github.com/gjm112/DSCI401>
+
+[This has been completed.](https://github.com/racheljordanstats/DSCI401)
+
+## Question 2
+
+### Create an R Markdown file and run the following code:
+
+```{r}
+cubs <- read.csv("https://raw.githubusercontent.com/gjm112/DSCI401/main/data/cubs_all_time.csv")
+```
+
+### Answer the following questions using R:
+
+### (a) How many total games have the Cubs won and lost between 1876 and 2022?
+
+```{r}
+sum(cubs$W)
+```
+
+The Cubs have won 11141 games between 1876 and 2022.
+
+```{r}
+sum(cubs$L)
+```
+
+The Cubs have lost 10592 games between 1876 and 2022.
+
+### (b) What year did the Cubs score the most runs? What year did the Cubs score the fewest runs? Do you have any thoughts about the year that the Cubs scored the fewest runs?
+
+```{r}
+max(cubs$R)
+which(cubs$R == 1056)
+cubs[129,"Year"]
+```
+
+The Cubs scored the most runs in 1894.
+
+```{r}
+min(cubs$R)
+which(cubs$R == 265)
+cubs[3,"Year"]
+```
+
+The Cubs scored the fewest runs in 2020, certainly due to the COVID-19 pandemic.
+
+### (c) In how many seasons was the Cubs' total attendance (i.e. the variable Attendance) over 3 million?
+
+```{r}
+length(which(cubs$Attendance>3000000))
+```
+
+The Cubs' total attendance was over 3 million in at least 12 seasons (we are missing some data from this variable).
+
+## Question 3
+
+Python work is available [here](https://colab.research.google.com/drive/1LpYEfxZIZ8RuLQEk43DXzvLYLqaY2ZpO?usp=sharing).
+
+## Question 4
+
+### 57.3% of Chicago's population is Black or Latino. 71% of San Antonio's population is Black or Latino. Chicago has given out 301,000 vaccines and 43.4% of these were to Black or Latino residents. San Antonio has given out 266,000 vaccines and 57.2% of these were to Black or Latino residents. Which of the cities had a more equitable distribution of vaccines? (Note: This is a wildly open ended question.)
+
+Equity in vaccine distribution is not necessarily a straightforward concept to define, and what is "equitable" can depend on risk levels, geography, health disparities, and other factors. In fact, the National Academies of Sciences, Engineering, and Medicine [has formed an ad hoc committee](https://www.nationalacademies.org/our-work/a-framework-for-equitable-allocation-of-vaccine-for-the-novel-coronavirus#sectionProjectScope) sponsored by the CDC and NIH to develop a framework for equitable allocation and distribution. Therefore, the real answer to this question depends on a lot of data and research that is not available to me.
+
+To make up a definition that sounds relatively reasonable, I would say that a city has an equitable distribution of vaccines if the percent available of vaccines going toward a group is (roughly) equal to the percent of the city's population which that group makes up. The difference between the percent of Black or Latino people living in Chicago (57.3%) and the percent of vaccines distributed to Black or Latino people in Chicago (43.4%) is 13.9%. The difference between the percent of Black or Latino people living in San Antonio (71%) and the percent of vaccines distributed to Black or Latino people in San Antonio (57.2%) is 13.8%. If this was sample data we could do a hypothesis test to see if these proportions were significantly different; however, this is population data, so we can simply say that the cities had a similarly equitable distribution of vaccines by the over-simplified definition of equitable distribution above, assuming the population and vaccines were both counted correctly.
