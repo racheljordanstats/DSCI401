@@ -1,0 +1,211 @@
+---
+title: "DSCI 401 HW 2"
+author: "Rachel Jordan"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Python answers are available [here](https://colab.research.google.com/drive/1-7saz_NPQ9Q563LZ0RYT-H-JKThOLSRP?usp=sharing).
+
+## Question 1 (R)
+
+#### Using the Teams data frame in the Lahman package:
+
+#### (a) Create a data frame that is a subset of the Teams data frame that contains only the years from 2000 through 2009 and the variables yearID, W, and L.
+
+```{r}
+#load data
+require(Lahman)
+
+#load dplyr
+require(dplyr)
+
+#load stats
+require(stats)
+
+#subset data
+subset_teams <- Teams %>% 
+  filter(2000 <= yearID,2009 >= yearID) %>% 
+  select(yearID,W,L)
+
+#check dataframe
+summary(subset_teams)
+```
+
+#### (b) How many years did the Chicago Cubs (teamID is "CHN") hit at least 200 HRs in a season and what was the median number of wins in those seasons?
+
+```{r}
+#subset and filter data
+subset_teams_2 <- Teams %>% 
+  filter(teamID == "CHN",HR >= 200)
+
+#how many observations?
+nrow(subset_teams_2)
+
+#calculate median
+summarize(subset_teams_2,median(W))
+```
+
+The Cubs hit at least 200 HRs in a season 7 times. The median number of wins in those seasons was 84.
+
+#### (c) Create a factor called election that divides the yearID into 4-year blocks that correspond to U.S. presidential terms. The first presidential term started in 1788. They each last 4 years and are still on the schedule set in 1788. During which term have the most home runs been hit?
+
+```{r}
+#create election year variable
+(2024-1788)/4
+elections <- as.data.frame(c(1:59))
+elections <- elections %>%
+  slice(rep(1:59,4)) %>% 
+  lapply(sort)
+
+#match up with year
+total_years <- as.data.frame(c(1789:2024))
+elections_and_years <- cbind(elections,total_years)
+colnames(elections_and_years) <- c("elections","years")
+
+elections_and_years <- elections_and_years %>% 
+  filter(years >= 1788, years <= 2021)
+
+Teamsnew <- Teams %>% 
+  rename(years = yearID)
+
+#merge data frames
+newTeams <- merge(Teamsnew,elections_and_years)
+
+#group_by and summarize
+newTeams2 <- newTeams %>% 
+  select(years,elections,HR) %>% 
+  group_by(elections) %>% 
+  summarize(sum(HR))
+
+#answer question
+max(newTeams2$`sum(HR)`)
+which(newTeams2$`sum(HR)`==21175)
+newTeams2[34,"elections"]
+
+#check answer
+Teams %>% 
+  filter(yearID >= 2001, yearID <= 2004) %>% 
+  summarize(sum(HR))
+```
+
+The most home runs were hit during the 54th presidential term, which seems to be George W. Bush's first term.
+
+#### (d) Make a line plot of total home runs per season and stratify by league. Remove observations where league is missing.
+
+```{r}
+#load ggplot2
+require(ggplot2)
+
+#drop NA from column lgID
+league_na_removed <- Teams %>% subset(lgID != 'NA')
+
+#draw plot
+ggplot(league_na_removed,aes(x=yearID,y=HR)) + geom_line() + facet_grid(rows=vars(lgID))
+```
+
+#### (e) Create an indicator variable called "winning record" which is defined as TRUE if the number of wins is greater than the number of losses and FALSE otherwise. Plot a scatter plot of Runs (R) vs Runs against (RA) with the color of each point showing whether that team had a winning record or not.
+
+```{r}
+#create new variable
+teams_1e <- Teams %>% 
+  mutate(`winning record` = case_when(
+    W > L ~ TRUE,
+    W <= L ~ FALSE
+  ))
+
+#plot data
+ggplot(teams_1e,aes(x=R,y=RA)) + geom_point(aes(colour=`winning record`))
+```
+
+## Question 2 (R)
+
+Use the nycflights13 package and the flights data frame to answer the following questions:
+
+#### (a) What month had the highest proportion of cancelled flights? What month had the lowest? Interpret any seasonal patterns.
+
+```{r}
+#load data set
+require(nycflights13)
+
+#highest proportion of cancelled flights
+flights %>% 
+  group_by(month) %>% 
+  summarize(cancellations=mean(is.na(air_time))) %>% 
+  arrange(desc(cancellations)) #february
+
+#lowest proportion of cancelled flights
+flights %>% 
+  group_by(month) %>% 
+  summarize(cancellations=mean(is.na(air_time))) %>% 
+  arrange(cancellations) #october
+
+#seasonal patterns?
+flights %>% 
+  group_by(month) %>% 
+  summarize(cancellations=mean(is.na(air_time)))
+#less cancelled in spring and fall than summer and winter
+```
+
+February had the highest proportion of cancellations and October had the lowest. Winter and summer had the highest proportion of cancellations overall with spring and fall seeing fewer cancellations. This makes sense due to more extreme weather occurring in summer/winter, affecting flight operations.
+
+#### (b) Given that a delay is longer than an hour, what is the average time of the total delay by airport (i.e. origin)
+
+```{r}
+flights %>% 
+  filter(dep_delay>60) %>% 
+  group_by(origin) %>% 
+  summarize(mean(dep_delay))
+```
+
+If a flight is delayed by at least an hour, the mean delay time is 2 hours for EWR, 2 hours 1 minute for JFK, and 2 hours 7 minutes for LGA.
+
+#### (c) What is the average air time for all flights by carrier? Which carrier has the longest average air time on their flights?
+
+```{r}
+flights %>% 
+  group_by(carrier) %>% 
+  summarize(avg_air_time=mean(air_time,na.rm=T))
+```
+
+```{r}
+flights %>% 
+  group_by(carrier) %>% 
+  summarize(mean_air_time=mean(air_time,na.rm=T)) %>% 
+  arrange(desc(mean_air_time)) #HA
+```
+
+HA has the highest average air time on their flights.
+
+#### (d) Keeping only flights that had a delay greater than 0, create a histogram for each month of the delay data.
+
+```{r}
+#filter data
+delayed_flights <- flights %>% 
+  filter(dep_delay>0)
+
+#create histograms
+ggplot(delayed_flights,aes(dep_delay)) + geom_histogram(bins=50) + facet_wrap(vars(month)) + xlim(1,200)
+```
+
+#### (e) Create side-by-side boxplots of delay times for flights with delays 60 minutes or greater for the top 5 airlines.
+
+```{r}
+#filter
+
+#top 5 airlines by frequency
+count(flights,carrier,sort=T)
+top_airlines <- c("EV","B6","UA","DL","AA")
+
+long_delays <- flights %>% 
+  filter(dep_delay>60) %>% 
+  filter(is.element(carrier,top_airlines))
+
+ggplot(long_delays,aes(dep_delay)) + geom_boxplot() + facet_grid(vars(carrier)) + theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank() 
+        )
+```
