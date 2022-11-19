@@ -1,0 +1,37 @@
+---
+title: "DSCI 401 HW 6"
+author: "Rachel Jordan"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Using the data whately 2015 from the macleish package, create an interactive plot using plotly (or ggplotly) displaying time (in days) on the x-axis and temperature on the y-axis with three lines: one for the high temperature of the day, one for the average temperature of the day, and one for the low temperature of the day.
+
+```{r}
+#load plotly
+require(plotly)
+
+#load tidyverse
+require(tidyverse)
+
+#load data
+data <- read.csv("whately2015.csv")
+
+#recode time data and calculate high, average, and low daily temps
+data$when <- as.Date(data$when)
+data2 <- data %>% 
+  mutate(time = as.numeric(difftime(when,when[1],units="days")+1)) %>% 
+  select(-when) %>% 
+  group_by(time) %>% 
+  summarize(daily_min = min(temperature), daily_avg = mean(temperature), daily_max = max(temperature)) 
+
+#create plot
+temp_plot <- ggplot(data=data2, aes(x=time)) + geom_line(aes(y=daily_min),color="blue") + geom_line(aes(y=daily_avg),color="green") + geom_line(aes(y=daily_max),color="red") + xlab("Time in Days") + ylab("Temperature") + ggtitle("Temperature over Time")
+
+#create interactive plot
+ggplotly(temp_plot)
+```
