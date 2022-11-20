@@ -9,6 +9,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+[Python code is available here.](https://colab.research.google.com/drive/1oji7_9C7v7-k2vA4sAF8ozg1HlpBiEC_?usp=sharing)
+
 #### Using the data whately 2015 from the macleish package, create an interactive plot using plotly (or ggplotly) displaying time (in days) on the x-axis and temperature on the y-axis with three lines: one for the high temperature of the day, one for the average temperature of the day, and one for the low temperature of the day.
 
 ```{r}
