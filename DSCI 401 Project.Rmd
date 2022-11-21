@@ -1,0 +1,30 @@
+---
+title: "DSCI 401 Project"
+author: "Rachel Jordan"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#load data
+crashes <- read.csv("Crashes.csv")
+people <- read.csv("People.csv")
+vehicles <- read.csv("Vehicles.csv")
+
+#load tidyverse
+require(tidyverse)
+
+#join data sets
+crashes_and_people <- people %>% 
+  left_join(crashes,by=c("CRASH_RECORD_ID" = "CRASH_RECORD_ID"))
+#each record is a person
+
+crashes_and_vehicles <- vehicles %>% 
+  left_join(crashes,by=c("CRASH_RECORD_ID" = "CRASH_RECORD_ID"))
+#each record is a vehicle
+```
+
