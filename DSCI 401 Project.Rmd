@@ -18,6 +18,25 @@ vehicles <- read.csv("Vehicles.csv")
 #load tidyverse
 require(tidyverse)
 
+#pare down variables to only the ones I want
+crashes <- crashes %>% 
+  select(CRASH_RECORD_ID,CRASH_DATE,POSTED_SPEED_LIMIT,WEATHER_CONDITION,
+         LIGHTING_CONDITION,CRASH_TYPE,DAMAGE,PRIM_CONTRIBUTORY_CAUSE,
+         SEC_CONTRIBUTORY_CAUSE,STREET_NO,STREET_DIRECTION,STREET_NAME,
+         MOST_SEVERE_INJURY,INJURIES_TOTAL,INJURIES_FATAL,
+         INJURIES_INCAPACITATING,INJURIES_NON_INCAPACITATING,
+         INJURIES_REPORTED_NOT_EVIDENT, INJURIES_NO_INDICATION,
+         INJURIES_UNKNOWN,CRASH_HOUR,CRASH_DAY_OF_WEEK,CRASH_MONTH,
+         LATITUDE,LONGITUDE,LOCATION)
+
+people <- people %>% 
+  select(PERSON_ID,PERSON_TYPE,CRASH_RECORD_ID,SEX,AGE,DRIVERS_LICENSE_STATE,
+         EJECTION,INJURY_CLASSIFICATION,DRIVER_ACTION,DRIVER_VISION,
+         BAC_RESULT,BAC_RESULT.VALUE,CELL_PHONE_USE)
+
+vehicles <- vehicles %>% 
+  select(CRASH_RECORD_ID,MAKE,MODEL,LIC_PLATE_STATE,VEHICLE_YEAR)
+
 #join data sets
 crashes_and_people <- people %>% 
   left_join(crashes,by=c("CRASH_RECORD_ID" = "CRASH_RECORD_ID"))
@@ -26,5 +45,6 @@ crashes_and_people <- people %>%
 crashes_and_vehicles <- vehicles %>% 
   left_join(crashes,by=c("CRASH_RECORD_ID" = "CRASH_RECORD_ID"))
 #each record is a vehicle
+
 ```
 
