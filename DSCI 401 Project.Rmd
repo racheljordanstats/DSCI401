@@ -48,3 +48,75 @@ crashes_and_vehicles <- vehicles %>%
 
 ```
 
+Profile of typical drivers at each crash severity
+
+```{r}
+#filter for only driver information
+drivers <- crashes_and_people %>% 
+  filter(PERSON_TYPE == "DRIVER")
+
+#filter out blank gender (97 records are blank for gender)
+drivers <- drivers %>% 
+  filter(SEX == "F" | SEX == "M" | SEX == "X")
+#unclear if X is non-binary, NA, or a mix
+
+#change drivers license state to local or other
+drivers <- drivers %>% 
+  drop_na(DRIVERS_LICENSE_STATE) %>% 
+  mutate(WHERE_FROM = case_when(
+    DRIVERS_LICENSE_STATE == "IL" ~ "Local",
+    TRUE ~ "Other"
+  ))
+
+#find profile of most frequent drivers in fatal crashes
+fatal_drivers <- drivers %>% 
+  filter(MOST_SEVERE_INJURY == "FATAL")
+
+fatal_driver_profile <- fatal_drivers %>% 
+  group_by(SEX,WHERE_FROM) %>% 
+  summarize(proportion = n()/nrow(fatal_drivers)) 
+
+fatal_driver_profile[which.max(fatal_driver_profile$proportion),] #male locals make up 53.6% of fatal crashes in Chicago
+
+#find profile of most frequent drivers in incapacitating crashes
+inc_drivers <- drivers %>% 
+  filter(MOST_SEVERE_INJURY == "INCAPACITATING INJURY")
+
+inc_driver_profile <- inc_drivers %>% 
+  group_by(SEX,WHERE_FROM) %>% 
+  summarize(proportion = n()/nrow(inc_drivers)) 
+
+inc_driver_profile[which.max(inc_driver_profile$proportion),] #male locals make up 47.2% of incapacitating crashes in Chicago
+
+#find profile of most frequent drivers in non-incapacitating injury crashes
+noninc_drivers <- drivers %>% 
+  filter(MOST_SEVERE_INJURY == "NONINCAPACITATING INJURY")
+
+noninc_driver_profile <- noninc_drivers %>% 
+  group_by(SEX,WHERE_FROM) %>% 
+  summarize(proportion = n()/nrow(fatal_drivers)) 
+
+noninc_driver_profile[which.max(noninc_driver_profile$proportion),] #male locals make up 37.05% of non-incapacitating injury crashes in Chicago
+
+#find profile of most frequent drivers in fatal crashes
+fatal_drivers <- drivers %>% 
+  filter(MOST_SEVERE_INJURY == "FATAL")
+
+fatal_driver_profile <- fatal_drivers %>% 
+  group_by(SEX,WHERE_FROM) %>% 
+  summarize(proportion = n()/nrow(fatal_drivers)) 
+
+fatal_driver_profile[which.max(fatal_driver_profile$proportion),] #male locals make up 53.6% of fatal crashes in Chicago
+```
+
+Profile of typical vehicles at each crash severity
+
+Profile of typical drivers at each crash cause
+
+Profile of typical vehicles at each crash cause
+
+Where in the city are crashes of different severities and causes happening?
+
+Do crashes involving cell phone use generally have more injuries, more damage, etc. than crashes not involving cell phone use?
+
+What is the profile of the typical driver and vehicle involved in crashes where BAC \> 0?
