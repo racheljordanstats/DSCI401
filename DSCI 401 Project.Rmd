@@ -386,18 +386,23 @@ Where in the city are crashes of different severeties and causes happening?
 ```{r}
 #find injury locations
 fatal_injury_locations <- crashes %>% 
-  filter(MOST_SEVERE_INJURY == "FATAL")
+  drop_na(LATITUDE,LONGITUDE) %>% 
+  filter(MOST_SEVERE_INJURY == "FATAL" | MOST_SEVERE_INJURY == "INCAPACITATING INJURY" | MOST_SEVERE_INJURY == "NONINCAPACITATING INJURY" | MOST_SEVERE_INJURY == "REPORTED, NOT EVIDENT" | MOST_SEVERE_INJURY == "NO INDICATION OF INJURY")
 
 inc_injury_locations <- crashes %>% 
+  drop_na(LATITUDE,LONGITUDE) %>% 
   filter(MOST_SEVERE_INJURY == "INCAPACITATING INJURY")
 
 noinj_injury_locations <- crashes %>% 
+  drop_na(LATITUDE,LONGITUDE) %>% 
   filter(MOST_SEVERE_INJURY == "NO INDICATION OF INJURY")
 
 noninc_injury_locations <- crashes %>% 
+  drop_na(LATITUDE,LONGITUDE) %>% 
   filter(MOST_SEVERE_INJURY == "NONINCAPACITATING INJURY")
 
 rne_injury_locations <- crashes %>% 
+  drop_na(LATITUDE,LONGITUDE) %>% 
   filter(MOST_SEVERE_INJURY == "REPORTED, NOT EVIDENT")
 
 #find cause locations
@@ -412,12 +417,22 @@ require(rgdal)
 
 ogrInfo("Boundaries - Community Areas (current).geojson")
 shapefile <- readOGR(dsn="Boundaries - Community Areas (current).geojson", p4s="+proj=tmerc +ellps=WGS84")
+shapefile_df <- fortify(shapefile)
 
+ggplot() + geom_polygon(shapefile_df, mapping=aes(x=long, y=lat, group=group)) + geom_path()  + geom_point(injury_locations,mapping=aes(x=LONGITUDE,y=LATITUDE, color=MOST_SEVERE_INJURY),size=1) 
 require(sf)
 require(mapview)
 
 
-mapview(, xcol = "LONGITUDE", ycol = "LATITUDE", crs = 4269, grid = FALSE)
+mapview(fatal_injury_locations, xcol = "LONGITUDE", ycol = "LATITUDE", crs = 4269, grid = FALSE, col.regions="red")
+
+mapview(inc_injury_locations, xcol = "LONGITUDE", ycol = "LATITUDE", crs = 4269, grid = FALSE, col.regions="orange")
+
+mapview(noninc_injury_locations, xcol = "LONGITUDE", ycol = "LATITUDE", crs = 4269, grid = FALSE, col.regions="yellow")
+
+mapview(rne_injury_locations, xcol = "LONGITUDE", ycol = "LATITUDE", crs = 4269, grid = FALSE, col.regions="blue")
+
+mapview(noinj_injury_locations, xcol = "LONGITUDE", ycol = "LATITUDE", crs = 4269, grid = FALSE, col.regions="green") 
 ```
 
 Do crashes involving cell phone use generally have more injuries, more damage, etc. than crashes not involving cell phone use?
