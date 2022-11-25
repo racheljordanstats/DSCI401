@@ -387,7 +387,7 @@ Where in the city are crashes of different severeties and causes happening?
 #find injury locations
 fatal_injury_locations <- crashes %>% 
   drop_na(LATITUDE,LONGITUDE) %>% 
-  filter(MOST_SEVERE_INJURY == "FATAL" | MOST_SEVERE_INJURY == "INCAPACITATING INJURY" | MOST_SEVERE_INJURY == "NONINCAPACITATING INJURY" | MOST_SEVERE_INJURY == "REPORTED, NOT EVIDENT" | MOST_SEVERE_INJURY == "NO INDICATION OF INJURY")
+  filter(MOST_SEVERE_INJURY == "FATAL")
 
 inc_injury_locations <- crashes %>% 
   drop_na(LATITUDE,LONGITUDE) %>% 
@@ -415,11 +415,17 @@ cause_locations <- crashes %>%
 #map
 require(rgdal)
 
+#create shapefile
 ogrInfo("Boundaries - Community Areas (current).geojson")
 shapefile <- readOGR(dsn="Boundaries - Community Areas (current).geojson", p4s="+proj=tmerc +ellps=WGS84")
 shapefile_df <- fortify(shapefile)
 
-ggplot() + geom_polygon(shapefile_df, mapping=aes(x=long, y=lat, group=group)) + geom_path()  + geom_point(injury_locations,mapping=aes(x=LONGITUDE,y=LATITUDE, color=MOST_SEVERE_INJURY),size=1) 
+#map fatal crashes
+ggplot() + geom_polygon(shapefile_df, mapping=aes(x=long, y=lat, group=group)) + geom_path()  + geom_point(fatal_injury_locations,mapping=aes(x=LONGITUDE,y=LATITUDE, color="red"),size=1) + ggtitle("Fatal Crash Locations")
+
+#map incapacitating crashes
+ggplot() + geom_polygon(shapefile_df, mapping=aes(x=long, y=lat, group=group)) + geom_path()  + geom_point(fatal_injury_locations,mapping=aes(x=LONGITUDE,y=LATITUDE, color="red"),size=1) + ggtitle("Incapacitating Crash Locations")
+
 require(sf)
 require(mapview)
 
