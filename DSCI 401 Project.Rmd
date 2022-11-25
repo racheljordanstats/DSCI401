@@ -178,7 +178,7 @@ fatal_car_profile <- fatal_cars %>%
   summarize(proportion = n()/nrow(fatal_cars)) 
 
 fatal_car_profile[which.max(fatal_car_profile$proportion),] 
-#local Toyotas make up the highest proportion of fatal car crashes among major car brands
+#local Toyotas make up the highest proportion of fatal car crashes among major car brands at 18.2%
 
 #find profile of most frequent vehicles in  crashes
 fatal_cars <- cars %>% 
@@ -230,13 +230,195 @@ noinj_car_profile <- noinj_cars %>%
   summarize(proportion = n()/nrow(noinj_cars)) 
 
 noinj_car_profile[which.max(noinj_car_profile$proportion),] #local Toyotas are involved in 18.8% of crashes in Chicago with no injuries
+
 ```
 
-Profile of typical drivers at each crash cause
+Profile of typical drivers at each crash cause (5 most common crash causes)
+
+```{r}
+#determine 5 most common crash causes besides #1 and #6 which are unknown and not applicable
+drivers %>% 
+  group_by(PRIM_CONTRIBUTORY_CAUSE) %>% 
+  summarize(n = n()) %>% 
+  arrange(desc(n)) %>% 
+  head(7)
+
+#FAILING TO YIELD RIGHT-OF-WAY
+#FOLLOWING TOO CLOSELY
+#IMPROPER OVERTAKING/PASSING
+#FAILING TO REDUCE SPEED TO AVOID CRASH
+#IMPROPER LANE USAGE
+
+#find profile of most frequent drivers in failing-to-yield crashes
+fty_drivers <- drivers %>% 
+  filter(PRIM_CONTRIBUTORY_CAUSE == "FAILING TO YIELD RIGHT-OF-WAY")
+
+fty_driver_profile <- fty_drivers %>% 
+  group_by(SEX,WHERE_FROM) %>% 
+  summarize(proportion = n()/nrow(fty_drivers)) 
+
+fty_driver_profile[which.max(fty_driver_profile$proportion),] #male locals make up 46.1% of crashes in Chicago where the driver failed to yield
+
+#find profile of most frequent drivers in "following too closely" crashes
+ftc_drivers <- drivers %>% 
+  filter(PRIM_CONTRIBUTORY_CAUSE == "FOLLOWING TOO CLOSELY")
+
+ftc_driver_profile <- ftc_drivers %>% 
+  group_by(SEX,WHERE_FROM) %>% 
+  summarize(proportion = n()/nrow(ftc_drivers)) 
+
+ftc_driver_profile[which.max(ftc_driver_profile$proportion),] #male locals make up 44% of crashes in Chicago where the driver was following too closely
+
+#find profile of most frequent drivers in "improper overtaking/passing crashes
+iop_drivers <- drivers %>% 
+  filter(PRIM_CONTRIBUTORY_CAUSE == "IMPROPER OVERTAKING/PASSING")
+
+iop_driver_profile <- iop_drivers %>% 
+  group_by(SEX,WHERE_FROM) %>% 
+  summarize(proportion = n()/nrow(iop_drivers)) 
+
+iop_driver_profile[which.max(iop_driver_profile$proportion),] #male locals make up 41.1% of crashes in Chicago where the driver improperly overtook/passed someone
+
+#find profile of most frequent drivers in "FAILING TO REDUCE SPEED TO AVOID CRASH" crashes
+ftrs_drivers <- drivers %>% 
+  filter(PRIM_CONTRIBUTORY_CAUSE == "FAILING TO REDUCE SPEED TO AVOID CRASH")
+
+ftrs_driver_profile <- ftrs_drivers %>% 
+  group_by(SEX,WHERE_FROM) %>% 
+  summarize(proportion = n()/nrow(ftrs_drivers)) 
+
+ftrs_driver_profile[which.max(ftrs_driver_profile$proportion),] #male locals make up 45.3% of crashes in Chicago where the driver failed to yield
+
+#find profile of most frequent drivers in "improper lane usage" crashes
+ilu_drivers <- drivers %>% 
+  filter(PRIM_CONTRIBUTORY_CAUSE == "IMPROPER LANE USAGE")
+
+ilu_driver_profile <- ilu_drivers %>% 
+  group_by(SEX,WHERE_FROM) %>% 
+  summarize(proportion = n()/nrow(ilu_drivers)) 
+
+ilu_driver_profile[which.max(ilu_driver_profile$proportion),] #male locals make up 44.6% of crashes in Chicago where the driver used lane improperly
+```
 
 Profile of typical vehicles at each crash cause
 
-Where in the city are crashes of different severities and causes happening?
+```{r}
+#find profile of most frequent vehicles in "FAILING TO YIELD RIGHT-OF-WAY" crashes
+fty_cars <- cars %>% 
+  filter(PRIM_CONTRIBUTORY_CAUSE == "FAILING TO YIELD RIGHT-OF-WAY")
+
+fty_car_profile <- fty_cars %>% 
+  group_by(MAKE_2,WHERE_FROM) %>% 
+  summarize(proportion = n()/nrow(fty_cars)) 
+
+fty_car_profile[which.max(fty_car_profile$proportion),] 
+#local Toyotas make up the highest proportion of "FAILING TO YIELD RIGHT-OF-WAY" car crashes among major car brands at 20%
+
+#find profile of most frequent vehicles in "FOLLOWING TOO CLOSELY" crashes
+ftc_cars <- cars %>% 
+  filter(PRIM_CONTRIBUTORY_CAUSE == "FOLLOWING TOO CLOSELY")
+
+ftc_car_profile <- ftc_cars %>% 
+  group_by(MAKE_2,WHERE_FROM) %>% 
+  summarize(proportion = n()/nrow(ftc_cars)) 
+
+ftc_car_profile[which.max(ftc_car_profile$proportion),] 
+#local Toyotas make up the highest proportion of "FAILING TO YIELD RIGHT-OF-WAY" car crashes among major car brands at 19.4%
+
+#find profile of most frequent vehicles in "FOLLOWING TOO CLOSELY" crashes
+ftc_cars <- cars %>% 
+  filter(PRIM_CONTRIBUTORY_CAUSE == "FOLLOWING TOO CLOSELY")
+
+ftc_car_profile <- ftc_cars %>% 
+  group_by(MAKE_2,WHERE_FROM) %>% 
+  summarize(proportion = n()/nrow(ftc_cars)) 
+
+ftc_car_profile[which.max(ftc_car_profile$proportion),] 
+#local Toyotas make up the highest proportion of "FOLLOWING TOO CLOSELY" car crashes among major car brands at 19.4%
+
+#find profile of most frequent vehicles in "IMPROPER OVERTAKING/PASSING" crashes
+iop_cars <- cars %>% 
+  filter(PRIM_CONTRIBUTORY_CAUSE == "IMPROPER OVERTAKING/PASSING")
+
+iop_car_profile <- iop_cars %>% 
+  group_by(MAKE_2,WHERE_FROM) %>% 
+  summarize(proportion = n()/nrow(iop_cars)) 
+
+iop_car_profile[which.max(iop_car_profile$proportion),] 
+#local Toyotas make up the highest proportion of "IMPROPER OVERTAKING/PASSING" car crashes among major car brands at 19.6%
+
+#find profile of most frequent vehicles in "IMPROPER OVERTAKING/PASSING" crashes
+iop_cars <- cars %>% 
+  filter(PRIM_CONTRIBUTORY_CAUSE == "IMPROPER OVERTAKING/PASSING")
+
+iop_car_profile <- iop_cars %>% 
+  group_by(MAKE_2,WHERE_FROM) %>% 
+  summarize(proportion = n()/nrow(iop_cars)) 
+
+iop_car_profile[which.max(iop_car_profile$proportion),] 
+#local Toyotas make up the highest proportion of "IMPROPER OVERTAKING/PASSING" car crashes among major car brands at 19.6%
+
+#find profile of most frequent vehicles in "FAILING TO REDUCE SPEED TO AVOID CRASH" crashes
+ftrs_cars <- cars %>% 
+  filter(PRIM_CONTRIBUTORY_CAUSE == "FAILING TO REDUCE SPEED TO AVOID CRASH")
+
+ftrs_car_profile <- ftrs_cars %>% 
+  group_by(MAKE_2,WHERE_FROM) %>% 
+  summarize(proportion = n()/nrow(ftrs_cars)) 
+
+ftrs_car_profile[which.max(ftrs_car_profile$proportion),] 
+#local Toyotas make up the highest proportion of "FAILING TO REDUCE SPEED TO AVOID CRASH" car crashes among major car brands at 17.1%
+
+#find profile of most frequent vehicles in "IMPROPER LANE USAGE" crashes
+ilu_cars <- cars %>% 
+  filter(PRIM_CONTRIBUTORY_CAUSE == "IMPROPER LANE USAGE")
+
+ilu_car_profile <- ilu_cars %>% 
+  group_by(MAKE_2,WHERE_FROM) %>% 
+  summarize(proportion = n()/nrow(ilu_cars)) 
+
+ilu_car_profile[which.max(ilu_car_profile$proportion),] 
+#local Toyotas make up the highest proportion of "IMPROPER LANE" car crashes among major car brands at 20.4%
+```
+
+Where in the city are crashes of different severeties and causes happening?
+
+```{r}
+#find injury locations
+fatal_injury_locations <- crashes %>% 
+  filter(MOST_SEVERE_INJURY == "FATAL")
+
+inc_injury_locations <- crashes %>% 
+  filter(MOST_SEVERE_INJURY == "INCAPACITATING INJURY")
+
+noinj_injury_locations <- crashes %>% 
+  filter(MOST_SEVERE_INJURY == "NO INDICATION OF INJURY")
+
+noninc_injury_locations <- crashes %>% 
+  filter(MOST_SEVERE_INJURY == "NONINCAPACITATING INJURY")
+
+rne_injury_locations <- crashes %>% 
+  filter(MOST_SEVERE_INJURY == "REPORTED, NOT EVIDENT")
+
+#find cause locations
+cause_locations <- crashes %>% 
+  filter(PRIM_CONTRIBUTORY_CAUSE == "FAILING TO YIELD RIGHT-OF-WAY" | PRIM_CONTRIBUTORY_CAUSE == "FOLLOWING TOO CLOSELY" | PRIM_CONTRIBUTORY_CAUSE == "IMPROPER OVERTAKING/PASSING" | PRIM_CONTRIBUTORY_CAUSE == "FAILING TO REDUCE SPEED TO AVOID CRASH" | PRIM_CONTRIBUTORY_CAUSE == "IMPROPER LANE USAGE") %>% 
+  drop_na(PRIM_CONTRIBUTORY_CAUSE, LATITUDE, LONGITUDE) %>% 
+  group_by(PRIM_CONTRIBUTORY_CAUSE) %>% 
+  summarize(latitude = mean(LATITUDE), longitude = mean(LONGITUDE))
+
+#map
+require(rgdal)
+
+ogrInfo("Boundaries - Community Areas (current).geojson")
+shapefile <- readOGR(dsn="Boundaries - Community Areas (current).geojson", p4s="+proj=tmerc +ellps=WGS84")
+
+require(sf)
+require(mapview)
+
+
+mapview(, xcol = "LONGITUDE", ycol = "LATITUDE", crs = 4269, grid = FALSE)
+```
 
 Do crashes involving cell phone use generally have more injuries, more damage, etc. than crashes not involving cell phone use?
 
