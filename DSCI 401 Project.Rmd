@@ -381,36 +381,20 @@ ilu_car_profile[which.max(ilu_car_profile$proportion),]
 #local Toyotas make up the highest proportion of "IMPROPER LANE" car crashes among major car brands at 20.4%
 ```
 
-Where in the city are crashes of different severeties and causes happening?
+Where in the city are crashes of different severities and causes happening?
 
 ```{r}
 #find injury locations
-fatal_injury_locations <- crashes %>% 
+injury_locations <- crashes %>% 
   drop_na(LATITUDE,LONGITUDE) %>% 
-  filter(MOST_SEVERE_INJURY == "FATAL")
-
-inc_injury_locations <- crashes %>% 
-  drop_na(LATITUDE,LONGITUDE) %>% 
-  filter(MOST_SEVERE_INJURY == "INCAPACITATING INJURY")
-
-noinj_injury_locations <- crashes %>% 
-  drop_na(LATITUDE,LONGITUDE) %>% 
-  filter(MOST_SEVERE_INJURY == "NO INDICATION OF INJURY")
-
-noninc_injury_locations <- crashes %>% 
-  drop_na(LATITUDE,LONGITUDE) %>% 
-  filter(MOST_SEVERE_INJURY == "NONINCAPACITATING INJURY")
-
-rne_injury_locations <- crashes %>% 
-  drop_na(LATITUDE,LONGITUDE) %>% 
-  filter(MOST_SEVERE_INJURY == "REPORTED, NOT EVIDENT")
+  filter(MOST_SEVERE_INJURY == "FATAL" | MOST_SEVERE_INJURY == "INCAPACITATING INJURY"| MOST_SEVERE_INJURY == "NONINCAPACITATING INJURY" | MOST_SEVERE_INJURY == "REPORTED, NOT EVIDENT") %>% 
+  filter(LONGITUDE != 0)
 
 #find cause locations
 cause_locations <- crashes %>% 
   filter(PRIM_CONTRIBUTORY_CAUSE == "FAILING TO YIELD RIGHT-OF-WAY" | PRIM_CONTRIBUTORY_CAUSE == "FOLLOWING TOO CLOSELY" | PRIM_CONTRIBUTORY_CAUSE == "IMPROPER OVERTAKING/PASSING" | PRIM_CONTRIBUTORY_CAUSE == "FAILING TO REDUCE SPEED TO AVOID CRASH" | PRIM_CONTRIBUTORY_CAUSE == "IMPROPER LANE USAGE") %>% 
-  drop_na(PRIM_CONTRIBUTORY_CAUSE, LATITUDE, LONGITUDE) %>% 
-  group_by(PRIM_CONTRIBUTORY_CAUSE) %>% 
-  summarize(latitude = mean(LATITUDE), longitude = mean(LONGITUDE))
+  drop_na(LATITUDE, LONGITUDE) %>% 
+  filter(LATITUDE != 0)
 
 #map
 require(rgdal)
@@ -420,25 +404,11 @@ ogrInfo("Boundaries - Community Areas (current).geojson")
 shapefile <- readOGR(dsn="Boundaries - Community Areas (current).geojson", p4s="+proj=tmerc +ellps=WGS84")
 shapefile_df <- fortify(shapefile)
 
-#map fatal crashes
-ggplot() + geom_polygon(shapefile_df, mapping=aes(x=long, y=lat, group=group)) + geom_path()  + geom_point(fatal_injury_locations,mapping=aes(x=LONGITUDE,y=LATITUDE, color="red"),size=1) + ggtitle("Fatal Crash Locations")
+#map of crashes by injury severity
+ggplot() + geom_polygon(shapefile_df, mapping=aes(x=long, y=lat, group=group)) + geom_path()  + geom_point(injury_locations,mapping=aes(x=LONGITUDE,y=LATITUDE, color=MOST_SEVERE_INJURY),size=0.5) + ggtitle("Crash Locations") #removed no injury crashes bc they were obscuring everything else. no patterns indicated by the map except less activity in far south side
 
-#map incapacitating crashes
-ggplot() + geom_polygon(shapefile_df, mapping=aes(x=long, y=lat, group=group)) + geom_path()  + geom_point(fatal_injury_locations,mapping=aes(x=LONGITUDE,y=LATITUDE, color="red"),size=1) + ggtitle("Incapacitating Crash Locations")
-
-require(sf)
-require(mapview)
-
-
-mapview(fatal_injury_locations, xcol = "LONGITUDE", ycol = "LATITUDE", crs = 4269, grid = FALSE, col.regions="red")
-
-mapview(inc_injury_locations, xcol = "LONGITUDE", ycol = "LATITUDE", crs = 4269, grid = FALSE, col.regions="orange")
-
-mapview(noninc_injury_locations, xcol = "LONGITUDE", ycol = "LATITUDE", crs = 4269, grid = FALSE, col.regions="yellow")
-
-mapview(rne_injury_locations, xcol = "LONGITUDE", ycol = "LATITUDE", crs = 4269, grid = FALSE, col.regions="blue")
-
-mapview(noinj_injury_locations, xcol = "LONGITUDE", ycol = "LATITUDE", crs = 4269, grid = FALSE, col.regions="green") 
+#map of crashes by cause
+ggplot() + geom_polygon(shapefile_df, mapping=aes(x=long, y=lat, group=group)) + geom_path()  + geom_point(cause_locations,mapping=aes(x=LONGITUDE,y=LATITUDE, color=PRIM_CONTRIBUTORY_CAUSE),size=0.5) + ggtitle("Crash Locations") #removed no injury crashes bc they were obscuring everything else. no patterns indicated by the map except less activity in far south side
 ```
 
 Do crashes involving cell phone use generally have more injuries, more damage, etc. than crashes not involving cell phone use?
