@@ -73,50 +73,55 @@ fatal_drivers <- drivers %>%
   filter(MOST_SEVERE_INJURY == "FATAL")
 
 fatal_driver_profile <- fatal_drivers %>% 
+  drop_na(AGE) %>% 
   group_by(SEX,WHERE_FROM) %>% 
-  summarize(proportion = n()/nrow(fatal_drivers)) 
+  summarize(proportion = n()/nrow(fatal_drivers), mean_age = mean(AGE)) 
 
-fatal_driver_profile[which.max(fatal_driver_profile$proportion),] #male locals make up 53.6% of fatal crashes in Chicago
+fatal_driver_profile[which.max(fatal_driver_profile$proportion),] #male locals around age 39 make up 53% of fatal crashes in Chicago
 
 #find profile of most frequent drivers in incapacitating crashes
 inc_drivers <- drivers %>% 
   filter(MOST_SEVERE_INJURY == "INCAPACITATING INJURY")
 
 inc_driver_profile <- inc_drivers %>% 
+  drop_na(AGE) %>% 
   group_by(SEX,WHERE_FROM) %>% 
-  summarize(proportion = n()/nrow(inc_drivers)) 
+  summarize(proportion = n()/nrow(inc_drivers), mean_age = mean(AGE)) 
 
-inc_driver_profile[which.max(inc_driver_profile$proportion),] #male locals make up 47.2% of incapacitating crashes in Chicago
+inc_driver_profile[which.max(inc_driver_profile$proportion),] #male locals around age 40 make up 46.3% of incapacitating crashes in Chicago
 
 #find profile of most frequent drivers in non-incapacitating injury crashes
 noninc_drivers <- drivers %>% 
   filter(MOST_SEVERE_INJURY == "NONINCAPACITATING INJURY")
 
 noninc_driver_profile <- noninc_drivers %>% 
+  drop_na(AGE) %>% 
   group_by(SEX,WHERE_FROM) %>% 
-  summarize(proportion = n()/nrow(noninc_drivers)) 
+  summarize(proportion = n()/nrow(noninc_drivers), mean_age = mean(AGE)) 
 
-noninc_driver_profile[which.max(noninc_driver_profile$proportion),] #male locals make up 44.7% of non-incapacitating injury crashes in Chicago
+noninc_driver_profile[which.max(noninc_driver_profile$proportion),] #male locals around age 40 make up 43.7% of non-incapacitating injury crashes in Chicago
 
 #find profile of most frequent drivers in "injuries reported but not evident" crashes
 ne_drivers <- drivers %>% 
   filter(MOST_SEVERE_INJURY == "REPORTED, NOT EVIDENT")
 
 ne_driver_profile <- ne_drivers %>% 
+  drop_na(AGE) %>% 
   group_by(SEX,WHERE_FROM) %>% 
-  summarize(proportion = n()/nrow(ne_drivers)) 
+  summarize(proportion = n()/nrow(ne_drivers), mean_age = mean(AGE)) 
 
-ne_driver_profile[which.max(ne_driver_profile$proportion),] #male locals make up 43.1% of "injuries reported but not evident" crashes in Chicago
+ne_driver_profile[which.max(ne_driver_profile$proportion),] #male locals around age 41 make up 42% of "injuries reported but not evident" crashes in Chicago
 
 #find profile of most frequent drivers in "no injury" crashes
 noinj_drivers <- drivers %>% 
   filter(MOST_SEVERE_INJURY == "NO INDICATION OF INJURY")
 
 noinj_driver_profile <- noinj_drivers %>% 
+  drop_na(AGE) %>% 
   group_by(SEX,WHERE_FROM) %>% 
-  summarize(proportion = n()/nrow(noinj_drivers)) 
+  summarize(proportion = n()/nrow(noinj_drivers), mean_age = mean(AGE)) 
 
-noinj_driver_profile[which.max(noinj_driver_profile$proportion),] #male locals make up 40.6% of crashes in Chicago with no injuries
+noinj_driver_profile[which.max(noinj_driver_profile$proportion),] #male locals around age 41 make up 38.4% of crashes in Chicago with no injuries
 ```
 
 #### Profile of typical vehicles at each crash severity
@@ -233,7 +238,7 @@ noinj_car_profile[which.max(noinj_car_profile$proportion),] #local Toyotas are i
 
 ```
 
-Profile of typical drivers at each crash cause (5 most common crash causes)
+#### Profile of typical drivers at each crash cause (5 most common crash causes)
 
 ```{r}
 #determine 5 most common crash causes besides #1 and #6 which are unknown and not applicable
@@ -254,53 +259,58 @@ fty_drivers <- drivers %>%
   filter(PRIM_CONTRIBUTORY_CAUSE == "FAILING TO YIELD RIGHT-OF-WAY")
 
 fty_driver_profile <- fty_drivers %>% 
+  drop_na(AGE) %>% 
   group_by(SEX,WHERE_FROM) %>% 
-  summarize(proportion = n()/nrow(fty_drivers)) 
+  summarize(proportion = n()/nrow(fty_drivers), mean_age = mean(AGE)) 
 
-fty_driver_profile[which.max(fty_driver_profile$proportion),] #male locals make up 46.1% of crashes in Chicago where the driver failed to yield
+fty_driver_profile[which.max(fty_driver_profile$proportion),] #male locals around age 41 make up 44.4% of crashes in Chicago where the driver failed to yield
 
 #find profile of most frequent drivers in "following too closely" crashes
 ftc_drivers <- drivers %>% 
   filter(PRIM_CONTRIBUTORY_CAUSE == "FOLLOWING TOO CLOSELY")
 
 ftc_driver_profile <- ftc_drivers %>% 
+  drop_na(AGE) %>% 
   group_by(SEX,WHERE_FROM) %>% 
-  summarize(proportion = n()/nrow(ftc_drivers)) 
+  summarize(proportion = n()/nrow(ftc_drivers), mean_age = mean(AGE)) 
 
-ftc_driver_profile[which.max(ftc_driver_profile$proportion),] #male locals make up 44% of crashes in Chicago where the driver was following too closely
+ftc_driver_profile[which.max(ftc_driver_profile$proportion),] #male locals around age 41 make up 42% of crashes in Chicago where the driver was following too closely
 
 #find profile of most frequent drivers in "improper overtaking/passing crashes
 iop_drivers <- drivers %>% 
   filter(PRIM_CONTRIBUTORY_CAUSE == "IMPROPER OVERTAKING/PASSING")
 
 iop_driver_profile <- iop_drivers %>% 
+  drop_na(AGE) %>% 
   group_by(SEX,WHERE_FROM) %>% 
-  summarize(proportion = n()/nrow(iop_drivers)) 
+  summarize(proportion = n()/nrow(iop_drivers), mean_age = mean(AGE)) 
 
-iop_driver_profile[which.max(iop_driver_profile$proportion),] #male locals make up 41.1% of crashes in Chicago where the driver improperly overtook/passed someone
+iop_driver_profile[which.max(iop_driver_profile$proportion),] #male locals around age 42 make up 40% of crashes in Chicago where the driver improperly overtook/passed someone
 
 #find profile of most frequent drivers in "FAILING TO REDUCE SPEED TO AVOID CRASH" crashes
 ftrs_drivers <- drivers %>% 
   filter(PRIM_CONTRIBUTORY_CAUSE == "FAILING TO REDUCE SPEED TO AVOID CRASH")
 
 ftrs_driver_profile <- ftrs_drivers %>% 
+  drop_na(AGE) %>% 
   group_by(SEX,WHERE_FROM) %>% 
-  summarize(proportion = n()/nrow(ftrs_drivers)) 
+  summarize(proportion = n()/nrow(ftrs_drivers), mean_age = mean(AGE)) 
 
-ftrs_driver_profile[which.max(ftrs_driver_profile$proportion),] #male locals make up 45.3% of crashes in Chicago where the driver failed to yield
+ftrs_driver_profile[which.max(ftrs_driver_profile$proportion),] #male locals around age 40 make up 44.1% of crashes in Chicago where the driver failed to yield
 
 #find profile of most frequent drivers in "improper lane usage" crashes
 ilu_drivers <- drivers %>% 
   filter(PRIM_CONTRIBUTORY_CAUSE == "IMPROPER LANE USAGE")
 
 ilu_driver_profile <- ilu_drivers %>% 
+  drop_na(AGE) %>% 
   group_by(SEX,WHERE_FROM) %>% 
-  summarize(proportion = n()/nrow(ilu_drivers)) 
+  summarize(proportion = n()/nrow(ilu_drivers), mean_age = mean(AGE)) 
 
-ilu_driver_profile[which.max(ilu_driver_profile$proportion),] #male locals make up 44.6% of crashes in Chicago where the driver used lane improperly
+ilu_driver_profile[which.max(ilu_driver_profile$proportion),] #male locals around age 42 make up 42.6% of crashes in Chicago where the driver used lane improperly
 ```
 
-Profile of typical vehicles at each crash cause
+#### Profile of typical vehicles at each crash cause
 
 ```{r}
 #find profile of most frequent vehicles in "FAILING TO YIELD RIGHT-OF-WAY" crashes
@@ -381,7 +391,7 @@ ilu_car_profile[which.max(ilu_car_profile$proportion),]
 #local Toyotas make up the highest proportion of "IMPROPER LANE" car crashes among major car brands at 20.4%
 ```
 
-Where in the city are crashes of different severities and causes happening?
+#### Where in the city are crashes of different severities and causes happening?
 
 ```{r}
 #find injury locations
@@ -405,12 +415,38 @@ shapefile <- readOGR(dsn="Boundaries - Community Areas (current).geojson", p4s="
 shapefile_df <- fortify(shapefile)
 
 #map of crashes by injury severity
-ggplot() + geom_polygon(shapefile_df, mapping=aes(x=long, y=lat, group=group)) + geom_path()  + geom_point(injury_locations,mapping=aes(x=LONGITUDE,y=LATITUDE, color=MOST_SEVERE_INJURY),size=0.5) + ggtitle("Crash Locations") #removed no injury crashes bc they were obscuring everything else. no patterns indicated by the map except less activity in far south side
+ggplot() + geom_polygon(shapefile_df, mapping=aes(x=long, y=lat, group=group)) + geom_path()  + geom_point(injury_locations[sample(nrow(injury_locations),nrow(injury_locations)*0.05,replace=F),],mapping=aes(x=LONGITUDE,y=LATITUDE, color=MOST_SEVERE_INJURY),size=1.0) + ggtitle("Crash Locations") #removed no injury crashes bc they were obscuring everything else. plotted 5% of the data as selected by random sampling because of the sheer amount of observations -- the map was unintelligible with the full data set. less activity in far south side and north west side, more activity in an east/west band around lakeview/lincoln park and west of lakeview. less activity around ~little village, englewood. less fatal injuries seem to happen in the loop.
 
 #map of crashes by cause
-ggplot() + geom_polygon(shapefile_df, mapping=aes(x=long, y=lat, group=group)) + geom_path()  + geom_point(cause_locations,mapping=aes(x=LONGITUDE,y=LATITUDE, color=PRIM_CONTRIBUTORY_CAUSE),size=0.5) + ggtitle("Crash Locations") #removed no injury crashes bc they were obscuring everything else. no patterns indicated by the map except less activity in far south side
+ggplot() + geom_polygon(shapefile_df, mapping=aes(x=long, y=lat, group=group)) + geom_path()  + geom_point(cause_locations[sample(nrow(cause_locations),nrow(cause_locations)*0.05,replace=F),],mapping=aes(x=LONGITUDE,y=LATITUDE, color=PRIM_CONTRIBUTORY_CAUSE),size=1.0) + ggtitle("Crash Locations") #removed no injury crashes bc they were obscuring everything else. plotted 5% of the data as selected by random sampling because of the sheer amount of observations -- the map was unintelligible with the full data set. no patterns indicated by the map except less activity in on the south side, especially the far south side. maybe slightly more improper lane usage and improper overtaking/passing in the loop. 
 ```
 
-Do crashes involving cell phone use generally have more injuries, more damage, etc. than crashes not involving cell phone use?
+#### Do crashes involving cell phone use generally have more injuries, more damage, etc. than crashes not involving cell phone use?
 
-What is the profile of the typical driver and vehicle involved in crashes where BAC \> 0?
+```{r}
+#create data set with cell phone use
+cell_phone_use <- crashes_and_people %>% 
+  mutate(cell_phone = case_when(
+    PRIM_CONTRIBUTORY_CAUSE == "TEXTING" ~ "YES",
+    PRIM_CONTRIBUTORY_CAUSE == "CELL PHONE USE OTHER THAN TEXTING" ~ "YES",
+    TRUE ~ "NO"
+  )) %>% 
+  select(cell_phone,DAMAGE,INJURIES_TOTAL)
+
+yes_cell <- cell_phone_use %>% 
+  drop_na(DAMAGE) %>% 
+  filter(cell_phone == "YES")
+
+no_cell <- cell_phone_use %>% 
+  drop_na(DAMAGE) %>% 
+  filter(cell_phone == "NO")
+
+cell_phone_use %>% 
+  drop_na(DAMAGE) %>% 
+  group_by(cell_phone,DAMAGE) %>% 
+  summarize(proportion_yes = n()/nrow(yes_cell), proportion_no = n()/nrow(no_cell), mean_injuries = mean(INJURIES_TOTAL)) #ignore proportion yes for cell phone no and proportion no for cell phone yes
+#looks like there is slightly more severe damage when there is cell phone use involved, but we don't know if it's STATISTICALLY significant
+#there do appear to be more injuries with cell phone use but again not sure if STATISTICALLY significant
+```
+
+#### What is the profile of the typical driver and vehicle involved in crashes where BAC \> 0?
