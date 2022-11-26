@@ -70,58 +70,58 @@ drivers <- drivers %>%
 
 #find profile of most frequent drivers in fatal crashes
 fatal_drivers <- drivers %>% 
-  filter(MOST_SEVERE_INJURY == "FATAL")
+  filter(MOST_SEVERE_INJURY == "FATAL") %>% 
+  drop_na(AGE)
 
 fatal_driver_profile <- fatal_drivers %>% 
-  drop_na(AGE) %>% 
   group_by(SEX,WHERE_FROM) %>% 
   summarize(proportion = n()/nrow(fatal_drivers), mean_age = mean(AGE)) 
 
-fatal_driver_profile[which.max(fatal_driver_profile$proportion),] #male locals around age 39 make up 53% of fatal crashes in Chicago
+fatal_driver_profile[which.max(fatal_driver_profile$proportion),] #male locals around age 39 make up 64.8% of fatal crashes in Chicago where age was recorded
 
 #find profile of most frequent drivers in incapacitating crashes
 inc_drivers <- drivers %>% 
-  filter(MOST_SEVERE_INJURY == "INCAPACITATING INJURY")
+  filter(MOST_SEVERE_INJURY == "INCAPACITATING INJURY") %>% 
+  drop_na(AGE)
 
 inc_driver_profile <- inc_drivers %>% 
-  drop_na(AGE) %>% 
   group_by(SEX,WHERE_FROM) %>% 
   summarize(proportion = n()/nrow(inc_drivers), mean_age = mean(AGE)) 
 
-inc_driver_profile[which.max(inc_driver_profile$proportion),] #male locals around age 40 make up 46.3% of incapacitating crashes in Chicago
+inc_driver_profile[which.max(inc_driver_profile$proportion),] #male locals around age 40 make up 55.5% of incapacitating crashes in Chicago when age was recorded
 
 #find profile of most frequent drivers in non-incapacitating injury crashes
 noninc_drivers <- drivers %>% 
-  filter(MOST_SEVERE_INJURY == "NONINCAPACITATING INJURY")
+  filter(MOST_SEVERE_INJURY == "NONINCAPACITATING INJURY") %>% 
+  drop_na(AGE)
 
 noninc_driver_profile <- noninc_drivers %>% 
-  drop_na(AGE) %>% 
   group_by(SEX,WHERE_FROM) %>% 
   summarize(proportion = n()/nrow(noninc_drivers), mean_age = mean(AGE)) 
 
-noninc_driver_profile[which.max(noninc_driver_profile$proportion),] #male locals around age 40 make up 43.7% of non-incapacitating injury crashes in Chicago
+noninc_driver_profile[which.max(noninc_driver_profile$proportion),] #male locals around age 40 make up 52.4% of non-incapacitating injury crashes in Chicago when age was recorded
 
 #find profile of most frequent drivers in "injuries reported but not evident" crashes
 ne_drivers <- drivers %>% 
-  filter(MOST_SEVERE_INJURY == "REPORTED, NOT EVIDENT")
+  filter(MOST_SEVERE_INJURY == "REPORTED, NOT EVIDENT") %>% 
+  drop_na(AGE)
 
 ne_driver_profile <- ne_drivers %>% 
-  drop_na(AGE) %>% 
   group_by(SEX,WHERE_FROM) %>% 
   summarize(proportion = n()/nrow(ne_drivers), mean_age = mean(AGE)) 
 
-ne_driver_profile[which.max(ne_driver_profile$proportion),] #male locals around age 41 make up 42% of "injuries reported but not evident" crashes in Chicago
+ne_driver_profile[which.max(ne_driver_profile$proportion),] #male locals around age 41 make up 50.3% of "injuries reported but not evident" crashes in Chicago when age was recorded
 
 #find profile of most frequent drivers in "no injury" crashes
 noinj_drivers <- drivers %>% 
-  filter(MOST_SEVERE_INJURY == "NO INDICATION OF INJURY")
+  filter(MOST_SEVERE_INJURY == "NO INDICATION OF INJURY") %>% 
+  drop_na(AGE)
 
 noinj_driver_profile <- noinj_drivers %>% 
-  drop_na(AGE) %>% 
   group_by(SEX,WHERE_FROM) %>% 
   summarize(proportion = n()/nrow(noinj_drivers), mean_age = mean(AGE)) 
 
-noinj_driver_profile[which.max(noinj_driver_profile$proportion),] #male locals around age 41 make up 38.4% of crashes in Chicago with no injuries
+noinj_driver_profile[which.max(noinj_driver_profile$proportion),] #male locals around age 41 make up 53.7% of crashes in Chicago with no injuries when age was recorded
 ```
 
 #### Profile of typical vehicles at each crash severity
@@ -256,58 +256,58 @@ drivers %>%
 
 #find profile of most frequent drivers in failing-to-yield crashes
 fty_drivers <- drivers %>% 
-  filter(PRIM_CONTRIBUTORY_CAUSE == "FAILING TO YIELD RIGHT-OF-WAY")
+  filter(PRIM_CONTRIBUTORY_CAUSE == "FAILING TO YIELD RIGHT-OF-WAY") %>% 
+  drop_na(AGE)
 
 fty_driver_profile <- fty_drivers %>% 
-  drop_na(AGE) %>% 
   group_by(SEX,WHERE_FROM) %>% 
   summarize(proportion = n()/nrow(fty_drivers), mean_age = mean(AGE)) 
 
-fty_driver_profile[which.max(fty_driver_profile$proportion),] #male locals around age 41 make up 44.4% of crashes in Chicago where the driver failed to yield
+fty_driver_profile[which.max(fty_driver_profile$proportion),] #male locals around age 41 make up 52.9% of crashes in Chicago where the driver failed to yield and age was recorded
 
 #find profile of most frequent drivers in "following too closely" crashes
 ftc_drivers <- drivers %>% 
-  filter(PRIM_CONTRIBUTORY_CAUSE == "FOLLOWING TOO CLOSELY")
+  filter(PRIM_CONTRIBUTORY_CAUSE == "FOLLOWING TOO CLOSELY") %>% 
+  drop_na(AGE)
 
 ftc_driver_profile <- ftc_drivers %>% 
-  drop_na(AGE) %>% 
   group_by(SEX,WHERE_FROM) %>% 
   summarize(proportion = n()/nrow(ftc_drivers), mean_age = mean(AGE)) 
 
-ftc_driver_profile[which.max(ftc_driver_profile$proportion),] #male locals around age 41 make up 42% of crashes in Chicago where the driver was following too closely
+ftc_driver_profile[which.max(ftc_driver_profile$proportion),] #male locals around age 41 make up 52.7% of crashes in Chicago where the driver was following too closely and age was recorded
 
 #find profile of most frequent drivers in "improper overtaking/passing crashes
 iop_drivers <- drivers %>% 
-  filter(PRIM_CONTRIBUTORY_CAUSE == "IMPROPER OVERTAKING/PASSING")
+  filter(PRIM_CONTRIBUTORY_CAUSE == "IMPROPER OVERTAKING/PASSING") %>% 
+  drop_na(AGE)
 
 iop_driver_profile <- iop_drivers %>% 
-  drop_na(AGE) %>% 
   group_by(SEX,WHERE_FROM) %>% 
   summarize(proportion = n()/nrow(iop_drivers), mean_age = mean(AGE)) 
 
-iop_driver_profile[which.max(iop_driver_profile$proportion),] #male locals around age 42 make up 40% of crashes in Chicago where the driver improperly overtook/passed someone
+iop_driver_profile[which.max(iop_driver_profile$proportion),] #male locals around age 42 make up 51.2% of crashes in Chicago where the driver improperly overtook/passed someone and age was recorded
 
 #find profile of most frequent drivers in "FAILING TO REDUCE SPEED TO AVOID CRASH" crashes
 ftrs_drivers <- drivers %>% 
-  filter(PRIM_CONTRIBUTORY_CAUSE == "FAILING TO REDUCE SPEED TO AVOID CRASH")
+  filter(PRIM_CONTRIBUTORY_CAUSE == "FAILING TO REDUCE SPEED TO AVOID CRASH") %>% 
+  drop_na(AGE)
 
 ftrs_driver_profile <- ftrs_drivers %>% 
-  drop_na(AGE) %>% 
   group_by(SEX,WHERE_FROM) %>% 
   summarize(proportion = n()/nrow(ftrs_drivers), mean_age = mean(AGE)) 
 
-ftrs_driver_profile[which.max(ftrs_driver_profile$proportion),] #male locals around age 40 make up 44.1% of crashes in Chicago where the driver failed to yield
+ftrs_driver_profile[which.max(ftrs_driver_profile$proportion),] #male locals around age 40 make up 54.5% of crashes in Chicago where the driver failed to yield and age was recorded
 
 #find profile of most frequent drivers in "improper lane usage" crashes
 ilu_drivers <- drivers %>% 
-  filter(PRIM_CONTRIBUTORY_CAUSE == "IMPROPER LANE USAGE")
+  filter(PRIM_CONTRIBUTORY_CAUSE == "IMPROPER LANE USAGE") %>% 
+  drop_na(AGE)
 
 ilu_driver_profile <- ilu_drivers %>% 
-  drop_na(AGE) %>% 
   group_by(SEX,WHERE_FROM) %>% 
   summarize(proportion = n()/nrow(ilu_drivers), mean_age = mean(AGE)) 
 
-ilu_driver_profile[which.max(ilu_driver_profile$proportion),] #male locals around age 42 make up 42.6% of crashes in Chicago where the driver used lane improperly
+ilu_driver_profile[which.max(ilu_driver_profile$proportion),] #male locals around age 42 make up 55.4% of crashes in Chicago where the driver used lane improperly and age was recorded
 ```
 
 #### Profile of typical vehicles at each crash cause
@@ -441,6 +441,7 @@ no_cell <- cell_phone_use %>%
   drop_na(DAMAGE) %>% 
   filter(cell_phone == "NO")
 
+#create summary table
 cell_phone_use %>% 
   drop_na(DAMAGE) %>% 
   group_by(cell_phone,DAMAGE) %>% 
@@ -449,4 +450,22 @@ cell_phone_use %>%
 #there do appear to be more injuries with cell phone use but again not sure if STATISTICALLY significant
 ```
 
-#### What is the profile of the typical driver and vehicle involved in crashes where BAC \> 0?
+#### What is the profile of the typical driver involved in crashes where BAC \> 0?
+
+```{r}
+bac_over_zero <- crashes_and_people %>% 
+  drop_na(BAC_RESULT.VALUE) %>% 
+  filter(BAC_RESULT.VALUE > 0) %>% 
+  drop_na(AGE) %>% 
+  mutate(WHERE_FROM = case_when(
+    DRIVERS_LICENSE_STATE == "IL" ~ "Local",
+    TRUE ~ "Other"
+  ))
+
+#find profile of most frequent drivers in alcohol-involved crashes
+bac_driver_profile <- bac_over_zero %>% 
+  group_by(SEX,WHERE_FROM) %>% 
+  summarize(proportion = n()/nrow(bac_over_zero), mean_age = mean(AGE)) 
+
+bac_driver_profile[which.max(bac_driver_profile$proportion),] #male locals around age 37 make up 61.4 of non-incapacitating injury crashes in Chicago where age was recorded. slightly lower age here than with other profiles that were generated. 
+```
