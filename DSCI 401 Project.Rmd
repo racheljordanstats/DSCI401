@@ -9,6 +9,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Appendix
+
 ```{r}
 #load data
 crashes <- read.csv("Crashes.csv")
@@ -418,7 +420,7 @@ shapefile_df <- fortify(shapefile)
 ggplot() + geom_polygon(shapefile_df, mapping=aes(x=long, y=lat, group=group)) + geom_path()  + geom_point(injury_locations[sample(nrow(injury_locations),nrow(injury_locations)*0.05,replace=F),],mapping=aes(x=LONGITUDE,y=LATITUDE, color=MOST_SEVERE_INJURY),size=1.0) + ggtitle("Crash Locations") #removed no injury crashes bc they were obscuring everything else. plotted 5% of the data as selected by random sampling because of the sheer amount of observations -- the map was unintelligible with the full data set. less activity in far south side and north west side, more activity in an east/west band around lakeview/lincoln park and west of lakeview. less activity around ~little village, englewood. less fatal injuries seem to happen in the loop.
 
 #map of crashes by cause
-ggplot() + geom_polygon(shapefile_df, mapping=aes(x=long, y=lat, group=group)) + geom_path()  + geom_point(cause_locations[sample(nrow(cause_locations),nrow(cause_locations)*0.05,replace=F),],mapping=aes(x=LONGITUDE,y=LATITUDE, color=PRIM_CONTRIBUTORY_CAUSE),size=1.0) + ggtitle("Crash Locations") #removed no injury crashes bc they were obscuring everything else. plotted 5% of the data as selected by random sampling because of the sheer amount of observations -- the map was unintelligible with the full data set. no patterns indicated by the map except less activity in on the south side, especially the far south side. maybe slightly more improper lane usage and improper overtaking/passing in the loop. 
+ggplot() + geom_polygon(shapefile_df, mapping=aes(x=long, y=lat, group=group)) + geom_path()  + geom_point(cause_locations[sample(nrow(cause_locations),nrow(cause_locations)*0.05,replace=F),],mapping=aes(x=LONGITUDE,y=LATITUDE, color=PRIM_CONTRIBUTORY_CAUSE),size=1.0) + ggtitle("Crash Locations") #plotted 5% of the data as selected by random sampling because of the sheer amount of observations -- the map was unintelligible with the full data set. no patterns indicated by the map except less activity in on the south side, especially the far south side. maybe slightly more improper lane usage and improper overtaking/passing in the loop. 
 ```
 
 #### Do crashes involving cell phone use generally have more injuries, more damage, etc. than crashes not involving cell phone use?
@@ -468,4 +470,26 @@ bac_driver_profile <- bac_over_zero %>%
   summarize(proportion = n()/nrow(bac_over_zero), mean_age = mean(AGE)) 
 
 bac_driver_profile[which.max(bac_driver_profile$proportion),] #male locals around age 37 make up 61.4 of non-incapacitating injury crashes in Chicago where age was recorded. slightly lower age here than with other profiles that were generated. 
+```
+
+#### Faceted Histograms of Ages by Crash Severity
+
+```{r}
+#crash severity
+plot_drivers <- drivers %>% 
+  drop_na(MOST_SEVERE_INJURY) %>% 
+  mutate(MSI_RELEVELED = case_when(
+    MOST_SEVERE_INJURY == "FATAL" ~ "FATAL",
+    MOST_SEVERE_INJURY == "INCAPACITATING INJURY" ~ "SEVERE",
+    MOST_SEVERE_INJURY == "NONINCAPACITATING INJURY" ~ "MINOR",
+    MOST_SEVERE_INJURY == "REPORTED, NOT EVIDENT" ~ "POSSIBLE",
+    MOST_SEVERE_INJURY == "NO INDICATION OF INJURY" ~ "NONE"
+  )) 
+
+#relevel
+plot_drivers$MSI_RELEVELED <- factor(plot_drivers$MSI_RELEVELED,levels = c("NONE","POSSIBLE","MINOR","SEVERE","FATAL"))
+
+#plot
+ggplot(plot_drivers, aes(x=AGE)) + geom_density() + xlim(0,100) + facet_grid(rows="MSI_RELEVELED") + ggtitle("Density of Driver Age by Injury Level")
+
 ```
